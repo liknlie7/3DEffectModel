@@ -70,14 +70,7 @@ void Game::Update(DX::StepTimer const& timer)
 	Matrix trans = Matrix::CreateTranslation(Vector3(2.f, 0.f, 0.f));
 	Matrix scale = Matrix::CreateScale(Vector3(5.f, 5.f, 5.f));
 
-	m_world = scale * rotZ * trans * rotY;
-
-	Vector3 camPos = Vector3(0.f, 0.f, 10.f);
-
-
-	// ビュー行列はUpdateの一番最後に
-	m_view = Matrix::CreateLookAt(camPos,
-		Vector3::Zero, Vector3::UnitY);
+	m_modelObject->Update();
 }
 #pragma endregion
 
@@ -96,7 +89,7 @@ void Game::Render()
 	m_deviceResources->PIXBeginEvent(L"Render");
 	auto context = m_deviceResources->GetD3DDeviceContext();
 
-	m_model->Draw(context, *m_states, m_world, m_view, m_proj);
+	m_modelObject->Render();
 
 	// TODO: Add your rendering code here.
 	context;
@@ -186,24 +179,9 @@ void Game::CreateDeviceDependentResources()
 
 	// TODO: Initialize device dependent objects here (independent of window size).
 	device;
-
-	// コモンステートを作成する
-	m_states = std::make_unique<CommonStates>(device);
-	// エフェクトファクトリーを作成する
-	m_fxFactory = std::make_unique<EffectFactory>(device);
-	// CMOを読み込んでモデルを作成する
-	m_model = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	// ワールド行列を作成する
-	m_world = Matrix::Identity;
-
-	// 画面のサイズを取得する
-	RECT outputSize = m_deviceResources->GetOutputSize();
-	UINT backBufferWidth = std::max<UINT>(outputSize.right - outputSize.left, 1);
-	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
-
-	// 射影行列を作る
-	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
-		float(backBufferWidth) / float(backBufferHeight), 0.1f, 100.1f);
+	
+	m_modelObject = std::make_unique<ModelObject>();
+	m_modelObject->Create(m_deviceResources.get());
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -215,9 +193,7 @@ void Game::CreateWindowSizeDependentResources()
 void Game::OnDeviceLost()
 {
 	// TODO: Add Direct3D resource cleanup here.
-	m_states.reset();
-	m_fxFactory.reset();
-	m_model.reset();
+	m_modelObject->Lost();
 }
 
 void Game::OnDeviceRestored()
