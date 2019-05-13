@@ -13,7 +13,7 @@ public:
 	ModelObject();
 	~ModelObject();
 
-	void Update();  
+	void Update(float timer); 
 	void Lost();  
 	void Create(DX::DeviceResources* deviceResources);
     void Render();

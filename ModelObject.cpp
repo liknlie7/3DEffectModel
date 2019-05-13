@@ -16,9 +16,17 @@ ModelObject::~ModelObject()
 
 }
 
-void ModelObject::Update()
+void ModelObject::Update(float timer)
 {
-	Vector3 camPos = Vector3(0.f, 0.f, 10.f);
+	Vector3 camPos = Vector3(0.f, 0.f, 3.f);
+
+	Matrix rotX = Matrix::CreateRotationX(timer);
+	Matrix rotY = Matrix::CreateRotationY(timer);
+	Matrix rotZ = Matrix::CreateRotationZ(timer);
+	Matrix trans = Matrix::CreateTranslation(Vector3(2.f, 0.f, 0.f));
+	Matrix scale = Matrix::CreateScale(Vector3(5.f, 5.f, 5.f));
+
+	/*m_world = rotX * trans * rotY;*/
 
 	// ÉrÉÖÅ[çsóÒÇÕUpdateÇÃàÍî‘ç≈å„Ç…
 	m_view = Matrix::CreateLookAt(camPos,
