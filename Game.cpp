@@ -10,6 +10,7 @@
 #include <Effects.h>
 #include <CommonStates.h>
 #include <Model.h>
+#include "MyEffect.h"
 extern void ExitGame();
 
 // namespaceを追加
@@ -65,27 +66,16 @@ void Game::Update(DX::StepTimer const& timer)
 
 	float time = float(timer.GetTotalSeconds());
 
-	Vector3 camPos = Vector3(0.f, 25.f, 0.f);
+	m_myEffect->Update(timer);
 
-	Matrix rotX = Matrix::CreateRotationX(time);
-	Matrix rotY = Matrix::CreateRotationY(time);
-	Matrix rotZ = Matrix::CreateRotationZ(time);
-	Matrix trans = Matrix::CreateTranslation(Vector3(2.f, 0.f, 0.f));
-	Matrix scale = Matrix::CreateScale(Vector3(2.f, 2.f, 2.f));
+	Vector3 camPos = Vector3(0.0f, 0.0f, 5.0f);
 
-	m_mokusei = trans * rotY;
-	m_kinsei = scale * trans * trans * rotY;
-	m_tikyuu = trans * trans * trans * trans * rotY;
-	m_tuki = rotY * trans * rotY * m_tikyuu;
+	m_myEffect->SetRenderState(camPos,m_view,m_proj);
 
-
-
-	/*m_world = rotX * trans * rotY;*/
 
 	// ビュー行列はUpdateの一番最後に
 	m_view = Matrix::CreateLookAt(camPos,
-		Vector3::Zero, Vector3::UnitZ);
-
+		Vector3::Zero, Vector3::UnitY);
 }
 #pragma endregion
 
@@ -104,17 +94,13 @@ void Game::Render()
 	m_deviceResources->PIXBeginEvent(L"Render");
 	auto context = m_deviceResources->GetD3DDeviceContext();
 
-	m_ptaiyou->Draw(context, *m_states, m_taiyou, m_view, m_proj);
-	m_pmokusei->Draw(context, *m_states, m_mokusei, m_view, m_proj);
-	m_pkinsei->Draw(context, *m_states, m_kinsei, m_view, m_proj);
-	m_ptikyuu->Draw(context, *m_states, m_tikyuu, m_view, m_proj);
-	m_ptuki->Draw(context, *m_states, m_tuki, m_view, m_proj);
 
 	// TODO: Add your rendering code here.
 	context;
+	
+	m_myEffect->Render();
 
 	m_deviceResources->PIXEndEvent();
-
 	// Show the new frame.
 	m_deviceResources->Present();
 }
@@ -198,25 +184,15 @@ void Game::CreateDeviceDependentResources()
 
 	// TODO: Initialize device dependent objects here (independent of window size).
 	device;
-	
-	// コモンステートを作成する
-	m_states = std::make_unique<CommonStates>(device);
-	// エフェクトファクトリーを作成する
-	m_fxFactory = std::make_unique<EffectFactory>(device);
-	// CMOを読み込んでモデルを作成する
-	m_ptaiyou = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	m_pmokusei = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	m_pkinsei = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	m_ptikyuu = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
-	m_ptuki = Model::CreateFromCMO(device, L"cup.cmo", *m_fxFactory);
 
-	// ワールド行列を作成する
-	//m_taiyou = Matrix::Identity;
 
 	// 画面のサイズを取得する
 	RECT outputSize = m_deviceResources->GetOutputSize();
 	UINT backBufferWidth = std::max<UINT>(outputSize.right - outputSize.left, 1);
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
+
+	m_myEffect = new MyEffect;
+	m_myEffect->Create(m_deviceResources.get(),3.0f, Vector3::Zero, Vector3(0.01f, 0.0f, 0.0f));
 
 	// 射影行列を作る
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
@@ -234,12 +210,6 @@ void Game::OnDeviceLost()
 	// TODO: Add Direct3D resource cleanup here.
 	m_states.reset();
 	m_fxFactory.reset();
-	m_ptaiyou.reset();
-	m_pmokusei.reset();
-	m_pkinsei.reset();
-	m_ptikyuu.reset();
-	m_ptuki.reset();
-
 }
 
 void Game::OnDeviceRestored()

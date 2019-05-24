@@ -19,6 +19,7 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="ModelObject.h" />
+    <ClInclude Include="MyEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -28,6 +29,7 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="ModelObject.cpp" />
+    <ClCompile Include="MyEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
