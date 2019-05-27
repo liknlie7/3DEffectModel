@@ -10,7 +10,7 @@
 #include <Effects.h>
 #include <CommonStates.h>
 #include <Model.h>
-#include "MyEffect.h"
+#include "EffectManager.h"
 extern void ExitGame();
 
 // namespaceを追加
@@ -66,11 +66,11 @@ void Game::Update(DX::StepTimer const& timer)
 
 	float time = float(timer.GetTotalSeconds());
 
-	m_myEffect->Update(timer);
+	m_effectManager->Update(timer);
 
 	Vector3 camPos = Vector3(0.0f, 0.0f, 5.0f);
 
-	m_myEffect->SetRenderState(camPos,m_view,m_proj);
+	m_effectManager->SetRenderState(camPos,m_view,m_proj);
 
 
 	// ビュー行列はUpdateの一番最後に
@@ -98,7 +98,7 @@ void Game::Render()
 	// TODO: Add your rendering code here.
 	context;
 	
-	m_myEffect->Render();
+	m_effectManager->Render();
 
 	m_deviceResources->PIXEndEvent();
 	// Show the new frame.
@@ -191,8 +191,9 @@ void Game::CreateDeviceDependentResources()
 	UINT backBufferWidth = std::max<UINT>(outputSize.right - outputSize.left, 1);
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
 
-	m_myEffect = new MyEffect;
-	m_myEffect->Create(m_deviceResources.get(),3.0f, Vector3::Zero, Vector3(0.01f, 0.0f, 0.0f));
+	m_effectManager = new EffectManager;
+	m_effectManager->Create(m_deviceResources.get());
+	m_effectManager->Initialize(3.0f,Vector3::Zero);
 
 	// 射影行列を作る
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,

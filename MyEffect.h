@@ -1,7 +1,9 @@
+//----------------------------------------
+// MyEffect.h
+//----------------------------------------
 #pragma once
 
 #include "DeviceResources.h"
-
 #include "StepTimer.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -10,47 +12,42 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 
-class MyEffect
+class MyEffect 
 {
 public:
-	void Create(DX::DeviceResources* deviceResources, float life = 100.0f,
-		DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3::Zero,
-		DirectX::SimpleMath::Vector3 velocity = DirectX::SimpleMath::Vector3::Zero);
+	//マネージャ管理のため共通項目を外部から貰えるように変更
+	void Create(DX::DeviceResources* deviceResources, ID3D11ShaderResourceView* texture,DirectX::AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch,ID3D11InputLayout* inputLayout);
 
+	void Initialize(float life = 100.0f, DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Vector3 velocity = DirectX::SimpleMath::Vector3::Zero);
 	void Update(DX::StepTimer timer);
 	void Render();
 
-	void SetRenderState(DirectX::SimpleMath::Vector3 camera,
-		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void SetRenderState(DirectX::SimpleMath::Vector3 camera, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+protected:
 
-private:
+	void Draw();
 
-	void Draw(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj);
-
-	DX::StepTimer					m_timer;
+	DX::StepTimer                           m_timer;
 	DX::DeviceResources*			m_deviceResources;
-	DirectX::SimpleMath::Matrix		m_world;
-	DirectX::SimpleMath::Matrix		m_view;
-	DirectX::SimpleMath::Matrix		m_proj;
-
+	DirectX::SimpleMath::Matrix m_world;
+	DirectX::SimpleMath::Matrix m_view;
+	DirectX::SimpleMath::Matrix m_proj;
 	// エフェクト
-	std::unique_ptr<DirectX::AlphaTestEffect>									m_batchEffect;
-
+	DirectX::AlphaTestEffect* m_batchEffect;
 	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>>	m_batch;
-
+	DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* m_batch;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>									m_inputLayout;
+	ID3D11InputLayout* m_inputLayout;
 
-	// コモンステート
-	std::unique_ptr<DirectX::CommonStates>										m_states;
-
+	std::unique_ptr<DirectX::CommonStates> m_states;
 	// テクスチャハンドル
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>							m_texture;
+	ID3D11ShaderResourceView* m_texture;
+	DirectX::SimpleMath::Vector3		m_camera;
 
-	DirectX::SimpleMath::Vector3												m_position;
-	DirectX::SimpleMath::Vector3												m_velocity;
-	DirectX::SimpleMath::Vector3												m_camera;
-	float																		m_life;
+	DirectX::SimpleMath::Vector3		m_position;
+	DirectX::SimpleMath::Vector3		m_velocity;
+	float								m_life;
+
+
+
 };

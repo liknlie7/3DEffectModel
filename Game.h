@@ -12,7 +12,7 @@
 #include <CommonStates.h>
 #include <Model.h>
 
-class MyEffect;
+class EffectManager;
 
 //#include "ModelObject.h"
 
@@ -70,5 +70,5 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	std::unique_ptr<DirectX::IEffectFactory> m_fxFactory;
 
-	MyEffect* m_myEffect;
+	EffectManager* m_effectManager;
 };
