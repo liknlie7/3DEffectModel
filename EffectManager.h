@@ -16,9 +16,9 @@
 class EffectManager
 {
 public:
-	void Create(DX::DeviceResources* deviceResources);
+	void Create(DX::DeviceResources* deviceResources, const wchar_t* address, int count = 1);
 	//Create()で全部処理は長いので分割
-	void Initialize(float life,DirectX::SimpleMath::Vector3 pos);
+	void Initialize(float life, DirectX::SimpleMath::Vector3 pos);
 
 	void Update(DX::StepTimer timer);
 	void Render();
@@ -34,8 +34,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 
-	//エフェクトのポインタ
-	MyEffect*	m_effect;
+	//エフェクトのリスト
+	std::list<MyEffect*>	m_effectList;
 
 	//テクスチャデータ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	m_texture;

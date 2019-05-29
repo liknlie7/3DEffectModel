@@ -70,7 +70,7 @@ void Game::Update(DX::StepTimer const& timer)
 
 	Vector3 camPos = Vector3(0.0f, 0.0f, 5.0f);
 
-	m_effectManager->SetRenderState(camPos,m_view,m_proj);
+	m_effectManager->SetRenderState(camPos, m_view, m_proj);
 
 
 	// ビュー行列はUpdateの一番最後に
@@ -97,7 +97,7 @@ void Game::Render()
 
 	// TODO: Add your rendering code here.
 	context;
-	
+
 	m_effectManager->Render();
 
 	m_deviceResources->PIXEndEvent();
@@ -192,8 +192,8 @@ void Game::CreateDeviceDependentResources()
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
 
 	m_effectManager = new EffectManager;
-	m_effectManager->Create(m_deviceResources.get());
-	m_effectManager->Initialize(3.0f,Vector3::Zero);
+	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/image01.png", 1000);
+	m_effectManager->Initialize(3.0f, Vector3::Zero);
 
 	// 射影行列を作る
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
