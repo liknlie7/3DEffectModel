@@ -40,19 +40,38 @@ void EffectManager::Create(DX::DeviceResources * deviceResources, const wchar_t*
 void EffectManager::Initialize(float life, Vector3 pos)
 {
 	int range = 100;
+
+	const float RAD = DirectX::XM_PI * 2;
+
+	int num = 0;
 	//life,pos,vel の値でm_effectを初期化する
 	for (std::list<MyEffect*>::iterator ite = m_effectList.begin(); ite != m_effectList.end(); ite++)
 	{
-		Vector3 vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
-		while (vel.Length() < 0.03f)
-		{
-			vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
-		}
+		float size = m_effectList.size();
+		Vector3 vel = Vector3(cos(RAD*num / size + DirectX::XM_PI / 2.0f), sin(RAD*num / size + DirectX::XM_PI / 2.0f), 0);
 
 		// ite = MyEffect*のポインター 
 		(*ite)->Initialize(life, pos, vel);
+		num++;
 	}
 }
+
+//void EffectManager::Initialize(float life, Vector3 pos)
+//{
+//	int range = 100;
+//	//life,pos,vel の値でm_effectを初期化する
+//	for (std::list<MyEffect*>::iterator ite = m_effectList.begin(); ite != m_effectList.end(); ite++)
+//	{
+//		Vector3 vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
+//		while (vel.Length() < 0.03f)
+//		{
+//			vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
+//		}
+//
+//		// ite = MyEffect*のポインター 
+//		(*ite)->Initialize(life, pos, vel);
+//	}
+//}
 
 
 void EffectManager::Update(DX::StepTimer timer)

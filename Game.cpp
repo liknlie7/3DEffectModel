@@ -192,7 +192,7 @@ void Game::CreateDeviceDependentResources()
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
 
 	m_effectManager = new EffectManager;
-	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/image01.png", 1000);
+	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/shadow.png", 10);
 	m_effectManager->Initialize(3.0f, Vector3::Zero);
 
 	// Ë‰es—ñ‚ğì‚é

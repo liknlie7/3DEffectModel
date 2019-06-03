@@ -27,6 +27,8 @@ protected:
 
 	void Draw();
 
+	void Restart();
+
 	DX::StepTimer                           m_timer;
 	DX::DeviceResources*			m_deviceResources;
 	DirectX::SimpleMath::Matrix m_world;
@@ -47,6 +49,10 @@ protected:
 	DirectX::SimpleMath::Vector3		m_position;
 	DirectX::SimpleMath::Vector3		m_velocity;
 	float								m_life;
+
+	DirectX::SimpleMath::Vector3		m_startPosition;
+	DirectX::SimpleMath::Vector3		m_startVelocity;
+	float								m_startLife;
 
 
 

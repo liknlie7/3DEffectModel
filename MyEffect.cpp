@@ -18,7 +18,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 
-void MyEffect::Create(DX::DeviceResources* deviceResources,ID3D11ShaderResourceView* texture,AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch, ID3D11InputLayout* inputLayout)
+void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResourceView* texture, AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch, ID3D11InputLayout* inputLayout)
 {
 	m_deviceResources = deviceResources;
 	auto device = m_deviceResources->GetD3DDevice();
@@ -37,21 +37,42 @@ void MyEffect::Create(DX::DeviceResources* deviceResources,ID3D11ShaderResourceV
 
 void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity)
 {
-	m_position = pos;
-	m_velocity = velocity;
-	m_life =  life;
-	
+	m_position = m_startPosition = pos;
+	velocity.Normalize();
+	velocity *= 0.05f;
+	m_velocity = m_startVelocity = velocity;
+	m_life = m_startLife = life;
 }
 
 void MyEffect::Update(DX::StepTimer timer)
 {
 	float time = float(m_timer.GetElapsedSeconds());
 	m_timer = timer;
-	
 
 	m_position += m_velocity;
 
 	m_life -= time;
+
+	if (m_life < 0)
+	{
+		Restart();
+		return;
+	}
+
+	//Vector3 length;
+	//length = m_position - m_startPosition;
+	//// ’·‚³‚ðŽæ“¾‚·‚é(float)
+	//if (length.Length() > 3)
+	//{
+	//	Restart();
+	//}
+}
+
+void MyEffect::Restart()
+{
+	m_position = m_startPosition;
+	m_velocity = m_startVelocity;
+	m_life = m_startLife;
 }
 
 void MyEffect::Render()
@@ -79,7 +100,7 @@ void MyEffect::Draw()
 
 	// ’¸“_î•ñ
 	VertexPositionTexture vertex[4] =
-	{	
+	{
 		VertexPositionTexture(Vector3(0.5f, 0.5f, 0.0f), Vector2(0.0f, 0.0f)),
 		VertexPositionTexture(Vector3(-0.5f, 0.5f, 0.0f), Vector2(1.0f, 0.0f)),
 		VertexPositionTexture(Vector3(-0.5f, -0.5f, 0.0f), Vector2(1.0f, 1.0f)),
@@ -116,6 +137,7 @@ void MyEffect::Draw()
 
 	// ”¼“§–¾•”•ª‚ð•`‰æ
 	m_batch->Begin();
-	m_batch->DrawQuad(vertex[0],vertex[1],vertex[2],vertex[3]);
+	m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
 	m_batch->End();
 }
+
