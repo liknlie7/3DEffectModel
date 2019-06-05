@@ -19,6 +19,9 @@ public:
 	void Create(DX::DeviceResources* deviceResources, const wchar_t* address, int count = 1);
 	//Create()‚Å‘S•”ˆ—‚Í’·‚¢‚Ì‚Å•ªŠ„
 	void Initialize(float life, DirectX::SimpleMath::Vector3 pos);
+	void InitializeAverage(float life, DirectX::SimpleMath::Vector3 pos);
+	void InitializeCone(float life, DirectX::SimpleMath::Vector3 pos,DirectX::SimpleMath::Vector3 dir);
+
 
 	void Update(DX::StepTimer timer);
 	void Render();

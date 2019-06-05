@@ -192,8 +192,8 @@ void Game::CreateDeviceDependentResources()
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
 
 	m_effectManager = new EffectManager;
-	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/shadow.png", 10);
-	m_effectManager->Initialize(3.0f, Vector3::Zero);
+	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/shadow.png", 100);
+	m_effectManager->InitializeCone(1.0f, Vector3::Zero,Vector3(0,1,0));
 
 	// Ë‰es—ñ‚ğì‚é
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,

@@ -37,11 +37,11 @@ void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResource
 
 void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity)
 {
-	m_position = m_startPosition = pos;
-	velocity.Normalize();
-	velocity *= 0.05f;
-	m_velocity = m_startVelocity = velocity;
-	m_life = m_startLife = life;
+	/*m_position = */m_startPosition = pos;
+	//velocity.Normalize();
+	//velocity *= 0.05f;
+	/*m_velocity = */m_startVelocity = velocity;
+	/*m_life = */m_startLife = life;
 }
 
 void MyEffect::Update(DX::StepTimer timer)
@@ -59,13 +59,13 @@ void MyEffect::Update(DX::StepTimer timer)
 		return;
 	}
 
-	//Vector3 length;
-	//length = m_position - m_startPosition;
-	//// ’·‚³‚ðŽæ“¾‚·‚é(float)
-	//if (length.Length() > 3)
-	//{
-	//	Restart();
-	//}
+	Vector3 length;
+	length = m_position - m_startPosition;
+	// ’·‚³‚ðŽæ“¾‚·‚é(float)
+	if (length.Length() > 3)
+	{
+		Restart();
+	}
 }
 
 void MyEffect::Restart()
