@@ -23,6 +23,9 @@ public:
 	void Render();
 
 	void SetRenderState(DirectX::SimpleMath::Vector3 camera, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+
+	void SetGravity(bool gravity) { m_isGravity = gravity; };
+
 protected:
 
 	void Draw();
@@ -30,10 +33,10 @@ protected:
 	void Restart();
 
 	DX::StepTimer                           m_timer;
-	DX::DeviceResources*			m_deviceResources;
-	DirectX::SimpleMath::Matrix m_world;
-	DirectX::SimpleMath::Matrix m_view;
-	DirectX::SimpleMath::Matrix m_proj;
+	DX::DeviceResources*					m_deviceResources;
+	DirectX::SimpleMath::Matrix				m_world;
+	DirectX::SimpleMath::Matrix				m_view;
+	DirectX::SimpleMath::Matrix				m_proj;
 	// エフェクト
 	DirectX::AlphaTestEffect* m_batchEffect;
 	// プリミティブバッチ
@@ -53,6 +56,8 @@ protected:
 	DirectX::SimpleMath::Vector3		m_startPosition;
 	DirectX::SimpleMath::Vector3		m_startVelocity;
 	float								m_startLife;
+
+	bool								m_isGravity;
 
 
 

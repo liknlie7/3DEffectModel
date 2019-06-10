@@ -28,6 +28,8 @@ public:
 
 	void SetRenderState(DirectX::SimpleMath::Vector3 camera, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
+	void SetGravity(bool gravity);
+
 private:
 	//バッチエフェクト
 	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;

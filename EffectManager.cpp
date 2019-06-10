@@ -97,6 +97,7 @@ void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 		cross *= sinf(rand()) * 0.3f;
 
 		d = d + cross;
+		// 速度
 		d *= 0.01f;
 
 		// ite = MyEffect*のポインター 
@@ -134,4 +135,14 @@ void EffectManager::SetRenderState(DirectX::SimpleMath::Vector3 camera, DirectX:
 		// ite = MyEffect*のポインター 
 		(*ite)->SetRenderState(camera, view, proj);
 	}
+}
+
+void EffectManager::SetGravity(bool gravity)
+{
+
+	for (std::list<MyEffect*>::iterator ite = m_effectList.begin(); ite != m_effectList.end(); ite++)
+	{
+		(*ite)->SetGravity(gravity);
+	}
+
 }

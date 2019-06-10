@@ -22,6 +22,7 @@ void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResource
 {
 	m_deviceResources = deviceResources;
 	auto device = m_deviceResources->GetD3DDevice();
+
 	// エフェクトの取得
 	m_batchEffect = batchEffect;
 	// 入力レイアウト取得
@@ -33,6 +34,9 @@ void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResource
 	m_states = std::make_unique<CommonStates>(device);
 	// テクスチャの取得
 	m_texture = texture;
+
+	// 重力の影響を受けない
+	m_isGravity = false;
 }
 
 void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity)
@@ -46,10 +50,28 @@ void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX:
 
 void MyEffect::Update(DX::StepTimer timer)
 {
-	float time = float(m_timer.GetElapsedSeconds());
 	m_timer = timer;
+	float time = float(m_timer.GetElapsedSeconds());
 
-	m_position += m_velocity;
+	// グルグル回る(単発)
+	//float total = float(m_timer.GetTotalSeconds());
+	//m_position += Vector3((cos(total), sin(total), 0)*0.01f);
+
+	// リングでグルグル回る
+	float total = float(m_timer.GetTotalSeconds());
+	float rad = atan2(m_velocity.y, m_velocity.x);
+	m_position += Vector3(cos(total + rad), sin(total + rad), 0)*0.01f;
+
+	// 減速	(右辺をVelocityにしてしまうと減速しきった状態で止まる
+	//m_velocity -= m_startVelocity * 0.06f;
+	//m_position += m_velocity;
+
+	// 重力
+	//Vector3 g = Vector3(0, 0.001f, 0);
+	//if (m_isGravity)
+	//	m_velocity -= g;
+
+	//m_position += m_velocity;
 
 	m_life -= time;
 
