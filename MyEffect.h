@@ -12,31 +12,29 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 
-class MyEffect 
+class MyEffect
 {
 public:
 	//マネージャ管理のため共通項目を外部から貰えるように変更
-	void Create(DX::DeviceResources* deviceResources, ID3D11ShaderResourceView* texture,DirectX::AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch,ID3D11InputLayout* inputLayout);
+	void Create(DX::DeviceResources* deviceResources, ID3D11ShaderResourceView* texture, DirectX::AlphaTestEffect* batchEffect, DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>* batch, ID3D11InputLayout* inputLayout);
 
 	void Initialize(float life = 100.0f, DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Vector3 velocity = DirectX::SimpleMath::Vector3::Zero);
 	void Update(DX::StepTimer timer);
 	void Render();
 
 	void SetRenderState(DirectX::SimpleMath::Vector3 camera, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-
 	void SetGravity(bool gravity) { m_isGravity = gravity; };
 
 protected:
 
 	void Draw();
-
 	void Restart();
 
 	DX::StepTimer                           m_timer;
-	DX::DeviceResources*					m_deviceResources;
-	DirectX::SimpleMath::Matrix				m_world;
-	DirectX::SimpleMath::Matrix				m_view;
-	DirectX::SimpleMath::Matrix				m_proj;
+	DX::DeviceResources*			m_deviceResources;
+	DirectX::SimpleMath::Matrix m_world;
+	DirectX::SimpleMath::Matrix m_view;
+	DirectX::SimpleMath::Matrix m_proj;
 	// エフェクト
 	DirectX::AlphaTestEffect* m_batchEffect;
 	// プリミティブバッチ
@@ -58,7 +56,5 @@ protected:
 	float								m_startLife;
 
 	bool								m_isGravity;
-
-
 
 };

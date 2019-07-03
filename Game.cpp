@@ -5,21 +5,23 @@
 #include "pch.h"
 #include "Game.h"
 
-// インクルードを追加
 #include <SimpleMath.h>
 #include <Effects.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <Model.h>
-#include "EffectManager.h"
+
+
 extern void ExitGame();
 
-// namespaceを追加
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 using Microsoft::WRL::ComPtr;
 
-Game::Game() noexcept(false)
+Game::Game()
 {
 	m_deviceResources = std::make_unique<DX::DeviceResources>();
 	m_deviceResources->RegisterDeviceNotify(this);
@@ -63,27 +65,20 @@ void Game::Update(DX::StepTimer const& timer)
 
 	// TODO: Add your game logic here.
 	elapsedTime;
-
 	float time = float(timer.GetTotalSeconds());
 
-	m_foam->Update(timer);
 
-	Vector3 camPos = Vector3(0.0f, 0.0f, 10.0f);
+	m_sample->Update(timer);
 
-	//m_snowCrystalL->SetRenderState(camPos, m_view, m_proj);
-	//m_snowCrystalS->SetRenderState(camPos, m_view, m_proj);
-	//m_snowFog->SetRenderState(camPos, m_view, m_proj);
 
-	m_foam->SetRenderState(camPos, m_view, m_proj);
-
-	// ビュー行列はUpdateの一番最後に
-	m_view = Matrix::CreateLookAt(camPos,
-		Vector3::Zero, Vector3::UnitY);
 }
 #pragma endregion
 
 #pragma region Frame Render
 // Draws the scene.
+
+
+
 void Game::Render()
 {
 	// Don't try to render anything before the first Update.
@@ -97,17 +92,14 @@ void Game::Render()
 	m_deviceResources->PIXBeginEvent(L"Render");
 	auto context = m_deviceResources->GetD3DDeviceContext();
 
-
 	// TODO: Add your rendering code here.
 	context;
+	float time = float(m_timer.GetTotalSeconds());
 
-	//m_snowCrystalL->Render();
-	//m_snowCrystalS->Render();
-	//m_snowFog->Render();
-
-	m_foam->Render();
+	m_sample->Render();
 
 	m_deviceResources->PIXEndEvent();
+
 	// Show the new frame.
 	m_deviceResources->Present();
 }
@@ -187,27 +179,27 @@ void Game::GetDefaultSize(int& width, int& height) const
 // These are the resources that depend on the device.
 void Game::CreateDeviceDependentResources()
 {
+
 	auto device = m_deviceResources->GetD3DDevice();
 
 	// TODO: Initialize device dependent objects here (independent of window size).
 	device;
 
-
-	// 画面のサイズを取得する
 	RECT outputSize = m_deviceResources->GetOutputSize();
 	UINT backBufferWidth = std::max<UINT>(outputSize.right - outputSize.left, 1);
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
+	Vector3 camera = Vector3(0, 0, 5);
+	Matrix view = Matrix::CreateLookAt(camera,
+		Vector3::Zero, Vector3::UnitY);
+	Matrix proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
+		float(backBufferWidth) / float(backBufferHeight), 0.1f, 1000.f);
 
-	//m_snowCrystalL = new EffectManager;
-	//m_snowCrystalL->Create(m_deviceResources.get(), L"Resources/Textures/SnowCrystalsLarge.png", 70);
+	m_sample = new ShaderSample();
+	m_sample->Create(m_deviceResources.get());
+	m_sample->Initialize(100, Vector3::Zero, Vector3::Zero);
 
-	m_foam = new EffectManager;
-	m_foam->Create(m_deviceResources.get(), L"Resources/Textures/Foam.png", 100);
-	m_foam->InitializeCone(2.0f, Vector3(-4, -4, 0), Vector3(0.1, 0.1, 0));
+	m_sample->SetRenderState(camera, view, proj);
 
-	// 射影行列を作る
-	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
-		float(backBufferWidth) / float(backBufferHeight), 0.1f, 100.1f);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -219,8 +211,7 @@ void Game::CreateWindowSizeDependentResources()
 void Game::OnDeviceLost()
 {
 	// TODO: Add Direct3D resource cleanup here.
-	m_states.reset();
-	m_fxFactory.reset();
+
 }
 
 void Game::OnDeviceRestored()

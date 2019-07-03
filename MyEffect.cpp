@@ -22,7 +22,6 @@ void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResource
 {
 	m_deviceResources = deviceResources;
 	auto device = m_deviceResources->GetD3DDevice();
-
 	// エフェクトの取得
 	m_batchEffect = batchEffect;
 	// 入力レイアウト取得
@@ -35,7 +34,7 @@ void MyEffect::Create(DX::DeviceResources* deviceResources, ID3D11ShaderResource
 	// テクスチャの取得
 	m_texture = texture;
 
-	// 重力の影響を受けない
+	//重力を使わない
 	m_isGravity = false;
 }
 
@@ -43,9 +42,10 @@ void MyEffect::Initialize(float life, DirectX::SimpleMath::Vector3 pos, DirectX:
 {
 	m_position = m_startPosition = pos;
 	//velocity.Normalize();
-	//velocity *= 0.05f;
+	//velocity *= 0.1f;
 	m_velocity = m_startVelocity = velocity;
 	m_life = m_startLife = life;
+
 }
 
 void MyEffect::Update(DX::StepTimer timer)
@@ -53,34 +53,20 @@ void MyEffect::Update(DX::StepTimer timer)
 	m_timer = timer;
 	float time = float(m_timer.GetElapsedSeconds());
 
-	//static float x, y, z;
-	//Vector3::Lerp(Vector3(m_position.x, 0, 0), Vector3(0, 0, 0), x);
-	//Vector3::Lerp(Vector3(0, m_position.y, 0), Vector3(0, 0, 0), y);
-	//x -= 0.00005;
-	//y -= 0.00005;
-	//m_position.x += x;
-	//m_position.y += y;
+	float total = float(m_timer.GetTotalSeconds());
 
-
-
-	// グルグル回る(単発)
-	//float total = float(m_timer.GetTotalSeconds());
-	//m_position += Vector3((cos(total), sin(total), 0)*0.01f);
-
-	// リングでグルグル回る
-	//float total = float(m_timer.GetTotalSeconds());
-	//float rad = atan2(m_velocity.y, m_velocity.x);
-	//m_position += Vector3(cos(total + rad), sin(total + rad), 0)*0.01f;
-
-	// 減速	(右辺をVelocityにしてしまうと減速しきった状態で止まる
-	//m_velocity -= m_startVelocity * 0.06f;
+	//m_velocity -= m_startVelocity * 0.05f;
 	//m_position += m_velocity;
 
-	// 重力
-	//Vector3 g = Vector3(0, 0.001f, 0);
-	//if (m_isGravity)
-	//	m_velocity -= g;
+	//float rad = atan2(m_velocity.y, m_velocity.x);
+	//m_position += Vector3(cos(total+rad), sin(total+rad), 0)*0.01f;
+	//m_position = Vector3(cos(total+rad), sin(total+rad), 0);
 
+	Vector3 g = Vector3(0, 0.001f, 0);
+	if (m_isGravity)
+	{
+		m_velocity -= g;
+	}
 	m_position += m_velocity;
 
 	m_life -= time;
@@ -93,11 +79,11 @@ void MyEffect::Update(DX::StepTimer timer)
 
 	Vector3 length;
 	length = m_position - m_startPosition;
-	// 長さを取得する(float)
-	if (length.Length() > 10)
+	if (length.Length() > 3)
 	{
 		Restart();
 	}
+
 }
 
 void MyEffect::Restart()
@@ -106,6 +92,7 @@ void MyEffect::Restart()
 	m_velocity = m_startVelocity;
 	m_life = m_startLife;
 }
+
 
 void MyEffect::Render()
 {
@@ -138,7 +125,6 @@ void MyEffect::Draw()
 		VertexPositionTexture(Vector3(-0.5f, -0.5f, 0.0f), Vector2(1.0f, 1.0f)),
 		VertexPositionTexture(Vector3(0.5f,-0.5f, 0.0f), Vector2(0.0f, 1.0f)),
 	};
-
 	// テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード）
 	ID3D11SamplerState* samplers[1] = { m_states->LinearClamp() };
 	context->PSSetSamplers(0, 1, samplers);

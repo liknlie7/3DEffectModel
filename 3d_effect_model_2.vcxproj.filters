@@ -21,6 +21,8 @@
     <ClInclude Include="ModelObject.h" />
     <ClInclude Include="MyEffect.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="ShaderSample.h" />
+    <ClInclude Include="BinaryFile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -32,6 +34,8 @@
     <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="MyEffect.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="ShaderSample.cpp" />
+    <ClCompile Include="BinaryFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -45,5 +49,9 @@
     <Manifest Include="settings.manifest">
       <Filter>Assets</Filter>
     </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ParticlePS.hlsl" />
+    <FxCompile Include="ParticleVS.hlsl" />
   </ItemGroup>
 </Project>
