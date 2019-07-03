@@ -3,7 +3,6 @@
 
 using namespace DirectX::SimpleMath;
 
-//																const付けておいたほうが良い
 void EffectManager::Create(DX::DeviceResources * deviceResources, const wchar_t* address, int count)
 {
 	auto device = deviceResources->GetD3DDevice();
@@ -23,8 +22,12 @@ void EffectManager::Create(DX::DeviceResources * deviceResources, const wchar_t*
 	//プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>>(deviceResources->GetD3DDeviceContext());
 
+
+
+
 	//テクスチャのロード
 	DirectX::CreateWICTextureFromFile(device, address, nullptr, m_texture.GetAddressOf());
+
 
 	// 中身を消す
 	m_effectList.clear();
@@ -32,31 +35,43 @@ void EffectManager::Create(DX::DeviceResources * deviceResources, const wchar_t*
 	for (int i = 0; i < count; i++)
 	{
 		MyEffect* effect = new MyEffect();
+
 		effect->Create(deviceResources, m_texture.Get(), m_batchEffect.get(), m_batch.get(), m_inputLayout.Get());
+
 		m_effectList.push_back(effect);
+
 	}
 }
 
-
-// ランダムに放射
-void EffectManager::Initialize(float life, Vector3 pos)
+void EffectManager::InitializeSnowS(float life)
 {
-	int range = 100;
-
 	for (std::list<MyEffect*>::iterator ite = m_effectList.begin(); ite != m_effectList.end(); ite++)
 	{
-		Vector3 vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
-		while (vel.Length() < 0.03f)
-		{
-			vel = Vector3(((rand() % (range * 2)) - range) / (float)range * 0.1f, ((rand() % (range * 2)) - range) / (float)range * 0.1f, 0);
-		}
+		Vector3 pos = Vector3(100, 100, 0);
+		Vector3 vel = Vector3(0, 0, 0);
 
-		// ite = MyEffect*のポインター 
+		(*ite)->Initialize(life, pos, vel);
+	}
+}
+void EffectManager::InitializeSnowL(float life)
+{
+	for (std::list<MyEffect*>::iterator ite = m_effectList.begin(); ite != m_effectList.end(); ite++)
+	{
+	MyEffect* myEffect;
+	myEffect = new MyEffect();
+
+		srand((unsigned int)time(NULL));
+
+		Vector3 pos = Vector3((rand() % 4) + 1, (rand() % 4) + 6, (rand() % 4) - 2);
+
+		Vector3 vel = Vector3(0, 0, 0);
+
+		myEffect->Initialize(life, pos, vel);
 		(*ite)->Initialize(life, pos, vel);
 	}
 }
 
-// 輪で飛ばす
+// 輪で飛ばす--------------------------------------------------------------------------------
 void EffectManager::InitializeAverage(float life, Vector3 pos)
 {
 	int range = 100;
@@ -77,8 +92,9 @@ void EffectManager::InitializeAverage(float life, Vector3 pos)
 		num++;
 	}
 }
+// ------------------------------------------------------------------------------------------------
 
-// コーン状に飛ばす
+// コーン状に飛ばす--------------------------------------------------------------------------------
 void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 {
 	int range = 100;
@@ -88,7 +104,7 @@ void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 	for (std::list<MyEffect*>::iterator ite = m_effectList.begin(); ite != m_effectList.end(); ite++)
 	{
 		Vector3 d = dir;
-		d *= sinf(rand()) + 1.0f;
+		d *= sinf(rand()) + 2.0f;
 
 		// 直行するベクトル計算
 		Vector3 cross = Vector3(d.y, -d.x, 0);
@@ -98,12 +114,13 @@ void EffectManager::InitializeCone(float life, Vector3 pos, Vector3 dir)
 
 		d = d + cross;
 		// 速度
-		d *= 0.01f;
+		d *= 0.1f;
 
 		// ite = MyEffect*のポインター 
 		(*ite)->Initialize(life, pos, d);
 	}
 }
+// ------------------------------------------------------------------------------------------------
 
 void EffectManager::Update(DX::StepTimer timer)
 {

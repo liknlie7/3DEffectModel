@@ -10,17 +10,21 @@
 #include <SimpleMath.h>
 #include <list>
 #include <WICTextureLoader.h>
+#include <random>
+#include <ctime>
 
 #include "Myeffect.h"
 
 class EffectManager
 {
 public:
-	void Create(DX::DeviceResources* deviceResources, const wchar_t* address, int count = 1);
+	void Create(DX::DeviceResources* deviceResources, const wchar_t* address1, int count = 1);
 	//Create()‚Å‘S•”ˆ—‚Í’·‚¢‚Ì‚Å•ªŠ„
-	void Initialize(float life, DirectX::SimpleMath::Vector3 pos);
+	void InitializeSnowS(float life);
+	void InitializeSnowL(float life);
+	void InitializeFog(float life);
 	void InitializeAverage(float life, DirectX::SimpleMath::Vector3 pos);
-	void InitializeCone(float life, DirectX::SimpleMath::Vector3 pos,DirectX::SimpleMath::Vector3 dir);
+	void InitializeCone(float life, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 dir);
 
 
 	void Update(DX::StepTimer timer);

@@ -70,5 +70,8 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	std::unique_ptr<DirectX::IEffectFactory> m_fxFactory;
 
-	EffectManager* m_effectManager;
+	EffectManager* m_snowCrystalL;
+	EffectManager* m_snowCrystalS;
+	EffectManager* m_snowFog;
+	EffectManager* m_foam;
 };

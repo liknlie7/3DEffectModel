@@ -66,12 +66,15 @@ void Game::Update(DX::StepTimer const& timer)
 
 	float time = float(timer.GetTotalSeconds());
 
-	m_effectManager->Update(timer);
+	m_foam->Update(timer);
 
-	Vector3 camPos = Vector3(0.0f, 0.0f, 5.0f);
+	Vector3 camPos = Vector3(0.0f, 0.0f, 10.0f);
 
-	m_effectManager->SetRenderState(camPos, m_view, m_proj);
+	//m_snowCrystalL->SetRenderState(camPos, m_view, m_proj);
+	//m_snowCrystalS->SetRenderState(camPos, m_view, m_proj);
+	//m_snowFog->SetRenderState(camPos, m_view, m_proj);
 
+	m_foam->SetRenderState(camPos, m_view, m_proj);
 
 	// ビュー行列はUpdateの一番最後に
 	m_view = Matrix::CreateLookAt(camPos,
@@ -98,7 +101,11 @@ void Game::Render()
 	// TODO: Add your rendering code here.
 	context;
 
-	m_effectManager->Render();
+	//m_snowCrystalL->Render();
+	//m_snowCrystalS->Render();
+	//m_snowFog->Render();
+
+	m_foam->Render();
 
 	m_deviceResources->PIXEndEvent();
 	// Show the new frame.
@@ -191,12 +198,12 @@ void Game::CreateDeviceDependentResources()
 	UINT backBufferWidth = std::max<UINT>(outputSize.right - outputSize.left, 1);
 	UINT backBufferHeight = std::max<UINT>(outputSize.bottom - outputSize.top, 1);
 
-	m_effectManager = new EffectManager;
-	m_effectManager->Create(m_deviceResources.get(), L"Resources/Textures/shadow.png", 50);
-	m_effectManager->Initialize(100.0f, Vector3::Zero);
-	//m_effectManager->SetGravity(true);
-	//m_effectManager->InitializeCone(100.0f, Vector3::Zero,Vector3(0,1,0));
+	//m_snowCrystalL = new EffectManager;
+	//m_snowCrystalL->Create(m_deviceResources.get(), L"Resources/Textures/SnowCrystalsLarge.png", 70);
 
+	m_foam = new EffectManager;
+	m_foam->Create(m_deviceResources.get(), L"Resources/Textures/Foam.png", 100);
+	m_foam->InitializeCone(2.0f, Vector3(-4, -4, 0), Vector3(0.1, 0.1, 0));
 
 	// 射影行列を作る
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
